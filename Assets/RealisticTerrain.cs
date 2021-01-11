@@ -47,10 +47,9 @@ namespace RealisticTerrainGenerator
         [BoxGroup("Base setting")]
         [Range(1, 255)]
         public int chunkSize = 200;
-
-        [Range(-100, 100)]
-        public float c1, c2, c3, c4, c5, c6, c7, c8;
-        float c1_, c2_, c3_, c4_, c5_, c6_, c7_, c8_;
+        [Range(-4, 4)]
+        public float c0,c1, c2, c3, c4, c5, c6, c7;
+        float c1_, c2_, c3_, c4_, c5_, c6_, c7_, c0_;
 
         [BoxGroup("Base setting")]
         [Button("Apply")]
@@ -90,8 +89,7 @@ namespace RealisticTerrainGenerator
             structure.DisableCollider();
             realHeight.EnableCollider();
             Sat = new Texture2D(1,1);
-            Tex.mainTexture = Sat;
-
+            Tex.mainTexture=Sat;
         }
         void OnDisable()
         {
@@ -114,14 +112,14 @@ namespace RealisticTerrainGenerator
         public bool autoUpdate = false;
         public void OnScene(SceneView _)
         {
-            if (c1 != c1_) { c1_ = c1; c[0].Flatten(c1); }
-            if (c2 != c2_) { c2_ = c2; c[1].Flatten(c2); }
-            if (c3 != c3_) { c3_ = c3; c[2].Flatten(c3); }
-            if (c4 != c4_) { c4_ = c4; c[3].Flatten(c4); }
-            if (c5 != c5_) { c5_ = c5; c[4].Flatten(c5); }
-            if (c6 != c6_) { c6_ = c6; c[5].Flatten(c6); }
-            if (c7 != c7_) { c7_ = c7; c[6].Flatten(c7); }
-            if (c8 != c8_) { c8_ = c8; c[7].Flatten(c8); }
+            if (c1 != c1_) { c1_ = c1; c[1].Flatten(c1); GAN(); }
+            if (c2 != c2_) { c2_ = c2; c[2].Flatten(c2); GAN(); }
+            if (c3 != c3_) { c3_ = c3; c[3].Flatten(c3); GAN(); }
+            if (c4 != c4_) { c4_ = c4; c[4].Flatten(c4); GAN(); }
+            if (c5 != c5_) { c5_ = c5; c[5].Flatten(c5); GAN(); }
+            if (c6 != c6_) { c6_ = c6; c[6].Flatten(c6); GAN(); }
+            if (c7 != c7_) { c7_ = c7; c[7].Flatten(c7); GAN(); }
+            if (c0 != c0_) { c0_ = c0; c[0].Flatten(c0); GAN(); }
             if (useTexture != p_useTexture)
             {
                 Tex.mainTexture = Sat;
@@ -212,9 +210,21 @@ namespace RealisticTerrainGenerator
 
 
         public string serverURL;
+        public bool waitingGAN = false;
         [Button()]
-        public async void GAN()
+        public void GAN_button()
         {
+            waitingGAN = false;
+            GAN_();
+        }
+        public void GAN()
+        {
+            GAN_();
+        }
+        async void GAN_()
+        {
+            if (waitingGAN) return;
+            waitingGAN = true;
             HttpClient client = new HttpClient { Timeout = System.TimeSpan.FromSeconds(30) };
             string response;
             var latent = new string[8];
@@ -237,6 +247,17 @@ namespace RealisticTerrainGenerator
             byte[] heiData = await client.GetByteArrayAsync(serverURL+"/" + responseData.hei_path);
             Convert.Png2Surface(heiData, realHeight);
             byte[] satData = await client.GetByteArrayAsync(serverURL + "/" + responseData.sat_path);
+            Sat.LoadImage(satData);
+            waitingGAN = false;
+        }
+        public string heiLoc, satLoc;
+        [Button()]
+        public async void Fetch()
+        {
+            HttpClient client = new HttpClient { Timeout = System.TimeSpan.FromSeconds(30) };
+            byte[] heiData = await client.GetByteArrayAsync(serverURL + "/" +heiLoc);
+            Convert.Png2Surface(heiData, realHeight);
+            byte[] satData = await client.GetByteArrayAsync(serverURL + "/" + satLoc);
             Sat.LoadImage(satData);
         }
     }

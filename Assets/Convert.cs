@@ -87,7 +87,7 @@ namespace RealisticTerrainGenerator
                 {
                     for (int j = 0; j < h; j++)
                     {
-                        float v = (map[j,i] ) / heightScale;
+                        float v = (map[j,i] ) / heightScale; //-0.5 ~ +0.5
                         img[i + j * w] = new Color(v- (mod1(v * cs))/cs + bias, (mod1(v *cs) ) - ((mod1(v * cs2 ) ) / cs), mod1(v *cs2 ));
                     }
                 }
