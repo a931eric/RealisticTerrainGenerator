@@ -18,8 +18,8 @@ namespace RealisticTerrainGenerator
 
         public void Init()
         {
-            if (PrefabStageUtility.GetPrefabStage(gameObject) != null) { return; }
-            if (Application.isPlaying) { enabled = false; return; }
+            //if (PrefabStageUtility.GetPrefabStage(gameObject) != null) { return; }
+            //if (Application.isPlaying) { enabled = false; return; }
             meshCollider = GetComponent<MeshCollider>();meshCollider.sharedMesh = mesh;
             transform.localPosition = new Vector3(posX, 0, posY);
             mr = GetComponent<MeshRenderer>();

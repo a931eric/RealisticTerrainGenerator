@@ -24,6 +24,7 @@ public class Character : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))
         {
             flying = !flying;
+            velY = 0;
         }
         if (flying)
         {
@@ -53,7 +54,7 @@ public class Character : MonoBehaviour
 
         moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
         moveDirection = cam.TransformDirection(moveDirection);
-        moveDirection = moveDirection * speed * (flying ? 4 : 1);
+        moveDirection = moveDirection * speed * (flying ? 6 : 1)*(Input.GetKey(KeyCode.LeftShift)?2:1);
         if (!flying)
             moveDirection += new Vector3(0, velY, 0);
 

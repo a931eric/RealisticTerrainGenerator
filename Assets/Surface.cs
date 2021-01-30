@@ -104,11 +104,8 @@ namespace RealisticTerrainGenerator
         }
         private void Start()
         {
-            if (UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject) != null) { return; }
-            if (Application.isPlaying)
-            {
-                enabled = false; return;
-            }
+            //if (UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject) != null) { return; }
+            //if (Application.isPlaying){enabled = false; return;}
             for (int i = 0; i < gauss.Length; i++)
             {
                 gauss[i] = Mathf.Exp(-i * 0.005f);
